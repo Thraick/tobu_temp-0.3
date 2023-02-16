@@ -1,0 +1,20 @@
+[
+    {
+        "name": "landline",
+        "amount": "$5,000",
+        "due_date": "17 December 2022",
+        "month" : "december"
+    },
+    {
+        "name": "blaze",
+        "amount": "$13,999",
+        "due_date": "17 november 2022",
+        "month" : "november"
+    },
+    {
+        "name": "connex",
+        "amount": "$18,999",
+        "due_date": "17 Nov 2022",
+        "month" : "november"
+    }
+]

@@ -1,0 +1,52 @@
+[
+  {
+    "name": "greetings",
+    "responses": ["Hello", "Hey"],
+    "extracted_item": {},
+    "variable": [],
+    "resource": ""
+  },
+  {
+    "name": "goodbye",
+    "responses": [
+      "It was a pleasure to assist you. Do have a great day.",
+      "Later"
+    ],
+    "extracted_item": {},
+    "variable": [],
+    "resource": ""
+  },
+  {
+    "name": "document_memory",
+    "responses": [
+      "Please tell me all about the memory you would like to document"
+    ],
+    "extracted_item": {},
+    "variable": [],
+    "resource": ""
+  },
+  {
+    "name": "unanswered_queue",
+    "responses": [
+      "I was wondering,",
+      "I was asking earlier,"
+    ],
+    "extracted_item": {},
+    "variable": [],
+    "resource": ""
+  },
+  {
+    "name": "additional_memory",
+    "responses": ["Would you like to add anything else to your memory?"],
+    "extracted_item": {},
+    "variable": [],
+    "resource": ""
+  },
+  {
+    "name": "confirm_save_memory",
+    "responses": ["Your memory was saved"],
+    "extracted_item": {},
+    "variable": [],
+    "resource": ""
+  }
+]

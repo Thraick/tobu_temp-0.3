@@ -1,0 +1,23 @@
+[
+  {
+    "account": "connex",
+    "number": "2315553",
+    "balance": "$18,999",
+    "due date": "17th of January, 2023",
+    "accountNumber": "23114"
+  },
+  {
+    "account": "landline",
+    "number": "2315555",
+    "balance": "$5000",
+    "due date": "31st of January, 2023",
+    "accountNumber": "23113"
+  },
+  {
+    "account": "blaze",
+    "number": "2315552",
+    "balance": "$13,999",
+    "due date": "17th of January, 2023",
+    "accountNumber": "23112"
+  }
+]

@@ -1,0 +1,46 @@
+{
+    "response": {
+        "location":{
+            "subject":["Where did you celebrate {{subject}}'s birthday?"],
+            "event":["Where was the {{event}}?"],
+            "default":["Where did this took place?"]
+        },
+        "age":{
+            "subject":["How old is {{subject}}?"],
+            "default":["How old are you?"]
+        },
+        "weather":{
+            "event":["What's the weather like at the {{event}}?"],
+            "activity":["What's the weather like while {{activity}}?"],
+            "default":["What's the weather like?"]
+        },
+        "people":{
+            "event":["Who was at the {{event}} with you?"],
+            "activity":["Who was {{activity}} with you?"],
+            "default":["Who was there with you?"]
+        },
+        "emotion":{
+            "subject":["How did you feel at {{subject}}'s birthday?"],
+            "activity":["How did you feel {{activity}}?"],
+            "event":["How did you feel at the {{event}}"],
+            "default":["How did you feel?"]
+        },
+        "subject":{
+            "event":["Who's {{event}} was it?"],
+            "default":["who's birthday was it?"]
+        },
+        "event":{
+            "default":["What event would you like to document?"]
+        },
+        "activity":{
+            "default":["What activity would you like to document?"]
+        },
+        "date":{
+            "subject":["When was {{subject}}'s birthday?"],
+            "event":["When did this {{event}} happened?"],
+            "activity":["When did you went {{activity}}?"],
+            "default": ["when did this happened?"]
+        }
+    }
+}
+

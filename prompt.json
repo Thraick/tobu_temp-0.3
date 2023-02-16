@@ -1,0 +1,69 @@
+{
+    "location":{
+        "event":{
+            "birthday":{
+                "normal_sentence":[
+                    "Where did {{subject}} celebrated her {{age}} birthday?",
+                    "Where did you celebrate {{subject}}'s birthday?"
+                ],
+                "fp_sentence":[
+                    "Where did you celebrate your birthday?"
+                ],
+                "default":[
+                    "So, where did you celebrate this birthday?"
+                ]
+            },
+            "anniversary":{
+                "normal_sentence":[],
+                "fp_sentence":[],
+                "default":[]
+            }
+        },
+        "activity":{
+            "running":{
+                "normal_sentence":[
+                    "Where did you went {{activity}}?",
+                    "Where did you and {{people}} went {{activity}}?"
+                ],
+                "fp_sentence":[
+                    "Where did you went running?"
+                ],
+                "default":[
+                    "So, where did this happened?"
+                ]
+            }
+        },
+        "default":[
+            "Where was this?",
+            "Where did this happen?",
+            "Where did this memory take place?"
+        ]
+    },
+    "people":{
+        "event":{
+            "birthday":{
+                "normal_sentence":[
+                    "Who was at {{subject}} {{age}} birthday?",
+                    "Who was at {{subject}} birthday?"
+                ],
+                "fp_sentence":[
+                    "Who was at your birthday?"
+                ],
+                "default":[
+                    "Who was at the birthday with u?"
+                ]
+            }
+        },
+        "default":[
+            "Who was there with you?"
+        ]
+    },
+    "emotion":{
+        "default":[
+            "Who was at the birthday with u?",
+            "How did {{people}} made y"
+        ]
+    }
+}
+
+

@@ -1,0 +1,25 @@
+{
+  "greetings": ["hello", "hi", "Hey", "greetings", "hey, how are you?"],
+  "faqs": [
+    "Can I change from one plan to another during the course of the month?",
+    "Where can I pay my bill?"
+  ],
+  "goodbye": [
+    "goodbye",
+    "bye",
+    "later",
+    "See you later",
+    "Take care",
+    "Catch you later",
+    "Talk to you later",
+    "I'll see you soon",
+    "Until next time",
+    "Farewell"
+  ],
+  "account": [
+    "i would like to check my account",
+    "Please show me my account",
+    "can u show me my account",
+    "I would like to see my account"
+  ]
+}

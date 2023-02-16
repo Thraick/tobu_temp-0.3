@@ -1,0 +1,20 @@
+[
+    {
+        "invoice_number": "2345362",
+        "due_date": "15.11.2022",
+        "month" : "november",
+        "amount": "$5000"
+    },
+    {
+        "invoice_number": "2345334",
+        "due_date": "15.03.2022",
+        "month" : "January",
+        "amount": "$3000"
+    },
+    {
+        "invoice_number": "2345332",
+        "due_date": "15.12.2022",
+        "month" : "december",
+        "amount": "$8000"
+    }
+]

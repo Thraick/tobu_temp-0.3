@@ -1,0 +1,41 @@
+[
+  {
+    "name": "greetings",
+    "responses": ["Hello", "Hey"],
+    "extracted_item": {},
+    "variable": [],
+    "resource": ""
+  },
+  {
+    "name": "goodbye",
+    "responses": [
+      "It was a pleasure to assist you. Do have a great day.",
+      "Later"
+    ],
+    "extracted_item": {},
+    "variable": [],
+    "resource": ""
+  },
+  {
+    "name": "account",
+    "responses": [
+      "Your {{account}} balance is {{balance}}.",
+      "{{balance}} is the balance for your {{account}}."
+    ],
+    "extracted_item": {},
+    "variable": ["number", "account", "balance"],
+    "resource": "utils/data/state/accounts.json"
+  },
+  {
+    "name": "confirm_number",
+    "responses": [
+      "The number u entered is {{number}}, right?",
+      "{{number}} was entered. Is that the correct number?"
+    ],
+    "extracted_item": {
+      "number": ["Please provide a number?", "I need a number?"]
+    },
+    "variable": ["number", "account", "balance"],
+    "resource": "utils/data/state/accounts.json"
+  }
+]

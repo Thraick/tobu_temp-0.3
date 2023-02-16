@@ -1,0 +1,12 @@
+
+
+{
+    "birthday":     ["subject", "age", "event", "people", "date", "location", "emotion"],
+    "vacation":     ["weather", "event", "people", "date", "location", "emotion"],
+    "anniversary":  ["number", "event", "people", "date", "location", "emotion"],
+    "funeral":      ["weather", "event", "people", "date", "location", "emotion"],
+    "sport":        ["outcome", "event", "people", "date", "location", "emotion"]
+}
+
+
+

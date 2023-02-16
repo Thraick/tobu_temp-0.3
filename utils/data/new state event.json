@@ -1,0 +1,90 @@
+[
+  {
+    "name": "greetings",
+    "responses": ["Hello", "Hey"],
+    "extracted_item": {},
+    "variable": [],
+    "resource": ""
+  },
+  {
+    "name": "goodbye",
+    "responses": [
+      "It was a pleasure to assist you. Do have a great day.",
+      "Later"
+    ],
+    "extracted_item": {},
+    "variable": [],
+    "resource": ""
+  },
+  {
+    "name": "memory",
+    "responses": ["Would you like to save this memory? {{summary}}"],
+    "extracted_item": {
+      "event": ["What event would you like to document?"],
+      "emotion": [
+        "Tell me all about this memory you'd like me to capture",
+        "If you're sharing, I'm listening.."
+      ],
+      "people": ["Who was there with you?"],
+      "location": ["Where did this event took place?"],
+      "date": ["When did this happened?"],
+      "age": ["How old are you?"],
+      "weather": ["What's the weather like?"]
+    },
+    "variable": ["summary"],
+    "resource": ""
+  },
+  {
+    "name": "save_memory",
+    "responses": ["Your memory was saved"],
+    "extracted_item": {},
+    "variable": [],
+    "resource": ""
+  },
+  {
+    "name": "cancel_memory",
+    "responses": ["Are you sure you want to cancel it?"],
+    "extracted_item": {},
+    "variable": [],
+    "resource": ""
+  },
+  {
+    "name": "confirm_cancel_memory",
+    "responses": ["your memory wasn't saved"],
+    "extracted_item": {},
+    "variable": [],
+    "resource": ""
+  },
+  {
+    "name": "birthday",
+    "responses": ["Would you like to save this memory? {{summary}}"],
+    "extracted_item": {
+      "subject": ["Who's birthday is it?"],
+      "age": ["How old is {{subject}}?"],
+      "emotion": [
+        "Tell me all about this memory you'd like me to capture",
+        "If you're sharing, I'm listening.."
+      ],
+      "people": ["Who was at {{subject}}'s birthday?"],
+      "location": ["Where did you celebrate {{subject}}'s birthday?"],
+      "date": ["When was {{subject}}'s birthday?"]
+    },
+    "variable": ["summary"],
+    "resource": ""
+  },
+  {
+    "name": "vacation",
+    "responses": ["Would you like to save this memory? {{summary}}"],
+    "extracted_item": {
+      "emotion": [
+        "Tell me all about this {{event}} you'd like me to capture"
+      ],
+      "people": ["Who was there with you?"],
+      "location": ["Where did this event took place?"],
+      "date": ["When did this happened?"],
+      "weather": ["What's the weather like?"]
+    },
+    "variable": ["summary"],
+    "resource": ""
+  }
+]

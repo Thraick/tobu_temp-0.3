@@ -1,0 +1,8 @@
+{
+    "sad": ["I'm sorry to hear that.", "Oh dear, that's so sad!", "I'm terribly sorry to hear that."],
+    "happy": ["Awesome!", "That's wonderful!", "How nice.."],
+    "fear": ["That's scary!", "That's terrifying!"],
+    "anger": ["I'm sorry that you're mad, it'll be ok..'", "Try to stay calm, ok?", "I'm sorry that you are angry!"],
+    "surprised": ["Wow, that's surprising!", "Amazing!, I know you are surprised indeed!"]
+}
+

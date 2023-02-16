@@ -1,0 +1,67 @@
+[
+  {
+    "name": "greetings",
+    "responses": ["Hello", "Hey", "Hi there", "Hey there"],
+    "extracted_item": {},
+    "variable": [],
+    "resource": ""
+  },
+  {
+    "name": "goodbye",
+    "responses": [
+      "It was a pleasure to assist you. Do have a great day.",
+      "By-bye now",
+      "Goodbye",
+      "Talk to you later"
+    ],
+    "extracted_item": {},
+    "variable": [],
+    "resource": ""
+  },
+  {
+    "name": "document_memory",
+    "responses": [
+      "If you're sharing, I'm listening",
+      "Feel free to share all about your memory",
+      "I'll do my best to capture your special moments.",
+      "Please tell me all about the memory you would like to document"
+    ],
+    "extracted_item": {},
+    "variable": [],
+    "resource": ""
+  },
+  {
+    "name": "unanswered_queue",
+    "responses": [
+      "I was wondering,",
+      "I was asking earlier,",
+      "You never did tell me..."
+    ],
+    "extracted_item": {},
+    "variable": [],
+    "resource": ""
+  },
+  {
+    "name": "additional_memory",
+    "responses": [
+      "Would you like to add anything else to your memory?",
+      "Is there anything else on your mind that you'd like to add?",
+      "Anything else?"
+    ],
+    "extracted_item": {},
+    "variable": [],
+    "resource": ""
+  },
+  {
+    "name": "confirm_save_memory",
+    "responses": [
+      "I've saved it for you.",
+      "I'll remember this moment for you.",
+      "I've captured it.",
+      "Thanks for sharing, I've captured all of it."
+    ],
+    "extracted_item": {},
+    "variable": [],
+    "resource": ""
+  }
+]

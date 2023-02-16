@@ -1,0 +1,10 @@
+
+{
+    "running":      ["weather", "activity", "people", "date", "location", "emotion"],
+    "swimming":      ["weather", "activity", "people", "date", "location", "emotion"],
+    "walking":      ["weather", "activity", "people", "date", "location", "emotion"],
+    "music":        ["favorite", "device", "emotion"],
+    "game":         ["team", "win"]
+}
+
+

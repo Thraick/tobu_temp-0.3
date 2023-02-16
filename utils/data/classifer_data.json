@@ -1,0 +1,34 @@
+{
+  "greetings": ["hello", "hi", "Hey", "greetings", "hey, how are you?"],
+  "faqs": [
+    "Can I change from one plan to another during the course of the month?",
+    "Where can I pay my bill?"
+  ],
+  "goodbye": [
+    "goodbye",
+    "bye",
+    "later",
+    "See you later",
+    "Take care",
+    "Catch you later",
+    "Talk to you later",
+    "I'll see you soon",
+    "Until next time",
+    "Farewell"
+  ],
+  "document_memory": [
+    "I would like to do document a memory",
+    "document a memory"
+  ],
+  "confirm_save_memory": [
+    "no",
+    "not really",
+    "save it",
+    "I am finish",
+    "no that's it",
+    "nope",
+    "I don't think so",
+    "you can save it",
+    "nah nah it's all good"
+  ]
+}
