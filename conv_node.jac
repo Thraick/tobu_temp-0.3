@@ -1181,7 +1181,7 @@ node capture_memories:dialogue_state {
                                         }
                                     }
                                 }
-                                chosen_response= rand.choice(entity_response);
+                                // chosen_response= rand.choice(entity_response);
                             }
                         }
                     }
@@ -1192,10 +1192,22 @@ node capture_memories:dialogue_state {
         // std.out("queue_context_filter");
         // std.out(queue_context_filter);
         // create_response
-        // std.out("queue_context");
-        // std.out(queue_context);
-        // std.out(queue_context_key);
-        // std.out(removed_queue);
+        std.out("queue_contextqueue_contextqueue_contextqueue_contextqueue_context\n");
+        std.out(queue_context);
+        std.out(queue_context_key);
+        std.out(removed_queue);
+
+        if(queue_context){
+            ent_que = [];
+            for item in queue_context{
+                if(item.type == dict){
+                    ent_que.list::append(item.dict::values[0]);
+                }
+            }
+            if(removed_queue in ent_que){
+                visitor.predicted_intent2 = "confirm_entity";
+            }
+        }
         if(queue_context and queue_context_filter != "default" and !visitor.respond){
             // for dic in queue_context{
             //     // if(dic)
@@ -1217,16 +1229,35 @@ node capture_memories:dialogue_state {
             //         create_response = flow.gen_response(chosen_response.str, queue_context);
             //     }
             // }
-            if (queue_context_key in queue_context){
-                create_response = flow.gen_response(chosen_response.str, queue_context[queue_context_key]);
+            confirm_entity_json = file.load_json("utils/data/comfirm_entity.json");
+            ent_que = [];
+            for item in queue_context{
+                if(item.type == dict){
+                    ent_que.list::append(item.dict::values[0]);
+                }
+            }
+            if(removed_queue in ent_que){
+                // visitor.predicted_intent2 = "confirm_entity";
+                for sentence in confirm_entity_json[removed_queue]{
+                    placeholders = [placeholder.strip(" {}") for placeholder in sentence.split("{{") if "}}" in placeholder];
+                    for ent in placeholders{
+                        if(ent not in queue_context[queue_context_key]){
+                            break;
+                        }
+                    }
+                }
+            }
+            elif (queue_context_key in queue_context){
+                create_response = flow.gen_response(entity_response.list, queue_context[queue_context_key]);
             }
             else{
-                create_response = flow.gen_response(chosen_response.str, queue_context);
+                create_response = flow.gen_response(entity_response.list, queue_context);
             }
         }
         else{
             // std.out("check else");
             // std.out(chosen_response);
+            // create_response = flow.gen_response(entity_response.list, queue_context);
             create_response = chosen_response;
         }
 
@@ -1267,7 +1298,7 @@ node capture_memories:dialogue_state {
             visitor.dialogue_context["queue_context"] = queue_context;
         }
 
-        if (visitor.response) {
+        if (visitor.response and !visitor.predicted_intent2) {
             visitor.next_state = here;
             // std.out("NOTE_:: response\n\n");
         }
@@ -1335,7 +1366,7 @@ node capture_memories:dialogue_state {
             // std.out("NOTE_:: no response\n\n");
             // std.out("visitor.unanswered_queue.length");
             // std.out(visitor.unanswered_queue.length);
-            if (visitor.unanswered_queue){
+            if (visitor.unanswered_queue and !visitor.predicted_intent2){
                 std.out("unasn check 32");
                 visitor.predicted_intent2 = "unanswered_queue";
             }
@@ -1754,7 +1785,7 @@ node unanswered_queue:dialogue_state{
                     if ("default" in response_entity['response'][item].dict::keys){
                         chosen_response_list = response_entity['response'][item]['default'];
                         removed_queue = item;
-                        chosen_response= rand.choice(chosen_response_list);
+                        // chosen_response= rand.choice(chosen_response_list);
                         // std.out("chosen_response");
                         // std.out(chosen_response);
                         // queue_context_filter = "default";
@@ -1767,10 +1798,11 @@ node unanswered_queue:dialogue_state{
         if(visitor.dialogue_context["queue_context"] and queue_context_filter != "default"){
             for dic in visitor.dialogue_context["queue_context"]{
                 if (queue_context_key == dic){
-                    create_response = flow.gen_response(chosen_response.str, visitor.dialogue_context["queue_context"][dic]);
+                    create_response = flow.gen_response(chosen_response_list.list, visitor.dialogue_context["queue_context"][dic]);
                 }
                 else{
-                    create_response = chosen_response;
+                    // create_response = chosen_response;
+                    create_response = flow.gen_response(chosen_response_list.list, visitor.dialogue_context["queue_context"]);
                 }
             }
 

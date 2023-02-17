@@ -154,7 +154,21 @@ def collect_info(collect_info: dict, my_dict: dict):
 
 
 @jaseci_action(act_group=["flow"], allow_remote=True)
-def gen_response(response: str, dial_context: dict):
+def gen_response(response_list: list, dial_context: dict):
+
+
+    prev_response = None
+
+# Keep selecting a random item until it is different from the previously selected item
+    while True:
+        response = random.choice(response_list)
+        if response != prev_response:
+            break
+        # Update the previously selected item to the current one
+        prev_response = response
+
+
+
     
     
     answer = ""

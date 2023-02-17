@@ -1,0 +1,7 @@
+{
+  "emotion": [
+    "Did you also feel {{emotion}} at {{subject}}'s {{event}}?",
+    "Did you also Feel {{emotion}} {{activity}}?",
+    "Did you also feel {{emotion}} at the birthday?"
+  ]
+}
