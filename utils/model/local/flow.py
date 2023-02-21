@@ -2,6 +2,7 @@ import random
 from jaseci.actions.live_actions import jaseci_action  # step 1
 import json
 import os
+from typing import Union
 
 import string
 from fastpunct import FastPunct
@@ -11,13 +12,6 @@ from textblob import TextBlob
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 fastpunct = FastPunct()
-
-# def correct(text):
-#     sentence = text
-#     blob = TextBlob(sentence)
-#     corrected_sentence = blob.correct()
-
-#     return corrected_sentence
 
 @jaseci_action(act_group=["flow"], allow_remote=True)
 def fix_sentence(sentence):
@@ -29,18 +23,6 @@ def fix_sentence(sentence):
 
     return sentence3[0]
 
-
-
-# sentence = "john smiths dog is. creating a ruccus"
-# sentence = "to get our minds off the funeral I took Timmy to his first baseball game at Citi Field in queens. it was the first time in a while I saw him open up and really smile. the new york Mets. they lost the game."
-
-
-# ss = fix_sentence(sentence)
-# print(ss)
- 
-
-
-
 @jaseci_action(act_group=["flow"], allow_remote=True)
 def check_required_entity(entity_list: list, ext_list: list):
     result = False
@@ -51,7 +33,6 @@ def check_required_entity(entity_list: list, ext_list: list):
             result = False
             break
     return result
-
 
 @jaseci_action(act_group=["flow"], allow_remote=True)
 def select_event_response(state_ext_item: dict, state_response: list, dial_context: dict, event:list):
@@ -74,9 +55,6 @@ def select_event_response(state_ext_item: dict, state_response: list, dial_conte
         dic["name"]= response_name
         dic["response"]= response
     return dic
-
-
-
 
 @jaseci_action(act_group=["flow"], allow_remote=True)
 def select_response(state_ext_item: dict, state_response: list, dial_context: dict):
@@ -137,8 +115,6 @@ def info_json(resource: str, dial_context: dict, variable):
     my_dict["info_json"]= my_list
     return my_dict
 
-
-
 @jaseci_action(act_group=["flow"], allow_remote=True)
 def collect_info(collect_info: dict, my_dict: dict):
 
@@ -151,22 +127,29 @@ def collect_info(collect_info: dict, my_dict: dict):
     
     return ["",""]
 
-
-
 @jaseci_action(act_group=["flow"], allow_remote=True)
-def gen_response(response_list: list, dial_context: dict):
-
-
-    prev_response = None
+def gen_response(response_list: list, dial_context: dict, prev_response: Union[str, None]):
 
 # Keep selecting a random item until it is different from the previously selected item
+    i = 0
     while True:
+        
         response = random.choice(response_list)
-        if response != prev_response:
+        print(response)
+        if response != prev_response and len(response) > 1:
             break
+        else:
+            
+            if (i > len(response_list)):
+                print("break")
+                break
+            i += 1
+            print("Error in gen response: ")
+            print("prev_response")
+            print(prev_response)
+            print(i)
         # Update the previously selected item to the current one
         prev_response = response
-
 
 
     
@@ -175,17 +158,18 @@ def gen_response(response_list: list, dial_context: dict):
     my_dict = {}
     # print(dial_context)
 
-    for item in dial_context:
-        if isinstance(dial_context[item], list):
-            # print("list")
-            my_dict[item] = dial_context[item][0]
-        else:
-            # print("list no")
-            my_dict[item] = dial_context[item]
+    if dial_context:
+        for item in dial_context:
+            if isinstance(dial_context[item], list):
+                # print("list")
+                my_dict[item] = dial_context[item][0]
+            else:
+                # print("list no")
+                my_dict[item] = dial_context[item]
     # print("my_dict")
     # print(my_dict)
 
-    if "{{" in response:
+    if "{{" in response and my_dict:
         l1 = response.replace('{{', '{')
         l2 = l1.replace('}}', '}')
         answer = l2.format(**my_dict)
@@ -193,7 +177,6 @@ def gen_response(response_list: list, dial_context: dict):
         answer = response
 
     return answer
-
 
 @jaseci_action(act_group=["flow"], allow_remote=True)
 def check_response(response:str):
@@ -224,3 +207,17 @@ def select_options(response: str, my_dict: dict, variable:list):
     answer = l2.format(**new_dict)
 
     return answer
+
+
+@jaseci_action(act_group=["flow"], allow_remote=True)
+def select_ent_response(my_text:str, my_dict:dict):
+      
+    placeholders = [placeholder.strip(" {}") for placeholder in my_text.split("{{") if "}}" in placeholder]
+    my_clean_list = [item[:item.index("}}")].strip("}") for item in placeholders if "}}" in item]
+
+    for item in placeholders:
+        if "}}" not in item:
+            my_clean_list.append(item.strip("}"))
+
+    if all([placeholder in my_dict for placeholder in my_clean_list]):
+        return my_text

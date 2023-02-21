@@ -21,10 +21,10 @@
   {
     "name": "document_memory",
     "responses": [
-      "If you're sharing, I'm listening",
-      "Feel free to share all about your memory",
-      "I'll do my best to capture your special moments.",
-      "Please tell me all about the memory you would like to document"
+      "If you're sharing {{user_name}}, I'm listening.",
+      "Feel free to share all about your memory {{user_name}}.",
+      "I'll do my best to capture your special moments {{user_name}}.",
+      "Please tell me all about the memory you would like to document {{user_name}}."
     ],
     "extracted_item": {},
     "variable": [],

@@ -270,21 +270,22 @@ node summary_template:dialogue_state{
         // sentence = ' '.str::join(visitor.dialogue_context["extracted_sentences"]);
         // std.out("sitor.dialogue_context['extracted_sentences']");
         // std.out(visitor.dialogue_context["extracted_sentences"]);
-        // std.out("sentence oooooo");
         sss = local.add_full_stop(visitor.dialogue_context["extracted_sentences"]);
-        // std.out(sss);
         sentence = ''.str::join(sss);
-        // std.out(sentence);
 
         sentence2 = "";
         sentence1 = "";
-        for s in global.to_remove:
-            sentence1 = sentence.str::replace(s, "");
 
+        std.out("Inside sentence");
+
+        for s in global.to_remove{
+            if(s in sentence){
+                std.out(s);
+                sentence1 = sentence.str::replace(s.str, "");
+            }
+        }
         // happy_transformer_result = local.happy_transformer(sentence2);
         // sentence2= local.grammar_synthesis(payload=sentence1);
-        // std.out("sentence1");
-        // std.out(sentence1);
         // sentence2 = local.punctuate(text=[sentence1]);
         sentence2 = [sentence1];
         // std.out("\n\nsentence2");
@@ -299,9 +300,6 @@ node summary_template:dialogue_state{
         // std.out("subject_title");
         // std.out(subject_title);
         gs_description = sentence2[0];
-
-        // std.out("gs_description");
-        // std.out(gs_description);
 
 
         visitor.dialogue_context["summary"] = sentence2[0];
@@ -353,7 +351,7 @@ node capture_memories:dialogue_state {
     has test_ev_type = {};
     has ev_type=[];
     // has event_name = [];
-    has answer_list = [];
+    // has answer_list = [];
     has removed_queue;
     // has item_name = [];
     has remove_context = [];
@@ -367,11 +365,13 @@ node capture_memories:dialogue_state {
     has events_type = file.load_json("utils/data/summary/events.json");
     has activities_type = file.load_json("utils/data/summary/activities.json");
     has sentiments = file.load_json("utils/data/summary/sentiments.json");
+    has commentary_json = file.load_json(global.commentary_path);
 
     has queue_context_key = "";
     has delete_entitiy = [];
 
     can zs_classifier.classify;
+    can flow.select_ent_response;
     
 
 
@@ -608,7 +608,7 @@ node capture_memories:dialogue_state {
                 if (removed_queue in item_name){
                     if (removed_queue in main_queue){
                         main_queue.list::remove(removed_queue);
-                        if(removed_queue not in visitor.extracted_entities){
+                        if(visitor.extracted_entities and removed_queue not in visitor.extracted_entities){
                             visitor.unanswered_queue.list::append(removed_queue);
                         }
                         else{
@@ -931,36 +931,105 @@ node capture_memories:dialogue_state {
                             // std.out("main_queue");
                             // std.out(main_queue);
                             main_queue[i][event].list::remove(ent);
-                            if (ent in visitor.unanswered_queue[i][event]): visitor.unanswered_queue[i][event].list::remove(ent);
+                            if (event in visitor.unanswered_queue[i]){
+                                if (ent in visitor.unanswered_queue[i][event]): visitor.unanswered_queue[i][event].list::remove(ent);
+                            }
                         }
                     }
                 }
             }
         }
 
-        for ent in delete_entitiy{
-            if(ent in visitor.dialogue_context){
-                visitor.dialogue_context.dict::pop(ent);
-            }
-            delete_entitiy.list::remove(ent);
-        }
+        // for ent in delete_entitiy{
+        //     if(ent in visitor.dialogue_context){
+        //         visitor.dialogue_context.dict::pop(ent);
+        //     }
+        //     delete_entitiy.list::remove(ent);
+        // }
     }
 
     can classify_sentiments{
-        std.out("classify_sentiments");
-        std.out(visitor.respond);
-        zs_result =  zs_classifier.classify(text=visitor.question, classes=sentiments.dict::keys);
-        if(visitor.question in zs_result[0]){
+        // std.out("classify_sentiments");
+        // std.out(visitor.respond);
+        zs_sentiments_result =  zs_classifier.classify(text=visitor.question, classes=sentiments.dict::keys);
+        // std.out("zs_sentiments_result");
+        // std.out(zs_sentiments_result);
+        zs_sent_list = [];
+        zs_sent_maz = 0.75;
+
+        if(visitor.question in zs_sentiments_result[0]){
             visitor.sentiment = "";
-            if (zs_result[0][visitor.question]){
-                for event in zs_result[0][visitor.question]{
-                    if (event['confidence'] > 0.75){ 
+            if (zs_sentiments_result[0][visitor.question]){
+                for event in zs_sentiments_result[0][visitor.question]{
+                    // if (event['confidence'] > 0.75){ 
+                    //     sentiment_name = event['value'];
+                    //     // visitor.sentiment =rand.choice(sentiments[sentiment_name]);
+                        
+                    // }
+                    if (event['confidence'] > zs_sent_maz){
                         sentiment_name = event['value'];
-                        visitor.sentiment =rand.choice(sentiments[sentiment_name]);
+                        zs_sent_maz = event['confidence'];
+                        zs_sent_list = sentiments[sentiment_name];
                     }
+                    
                 }
             }
+            if (zs_sent_list){
+                if (queue_context_key){
+                    ssss = flow.gen_response(zs_sent_list.list, queue_context[queue_context_key], global.prev_response);
+                }
+                else{
+                    ssss = flow.gen_response(zs_sent_list.list, {}, global.prev_response);
+                }
+                visitor.sentiment = ssss;
+            }
         }
+
+        zs_commentary_result =  zs_classifier.classify(text=visitor.question, classes=commentary_json.dict::keys);
+        // std.out("zs_commentary_result");
+        // std.out(zs_commentary_result);
+        zs_com_maz = 0.75;
+        zs_com_list = [];
+
+        if(visitor.question in zs_commentary_result[0]){
+            visitor.commentary = "";
+            if (zs_commentary_result[0][visitor.question]){
+                for event in zs_commentary_result[0][visitor.question]{
+                    if (event['confidence'] > zs_com_maz){
+                        commentary_name = event['value'];
+                        zs_com_maz = event['confidence'];
+                        zs_com_list = commentary_json[commentary_name];
+                    }
+                    
+                    // if (event['confidence'] > 0.75){ 
+                    //     commentary_name = event['value'];
+                    //     std.out(commentary_json[commentary_name]);
+                    //     // visitor.commentary =rand.choice(commentary_json[commentary_name]);
+                    //     if (queue_context_key){
+                    //         ssss = flow.gen_response(commentary_json[commentary_name].list, queue_context[queue_context_key], global.prev_response);
+                    //     }
+                    //     else{
+                    //         ssss = flow.gen_response(commentary_json[commentary_name].list, {}, global.prev_response);
+                    //     }
+                    //     visitor.commentary = ssss;
+                    // }
+                }
+            }
+            if(zs_com_list){
+                if (queue_context_key){
+                    ssss = flow.gen_response(zs_com_list.list, queue_context[queue_context_key], global.prev_response);
+                }
+                else{
+                    ssss = flow.gen_response(zs_com_list.list, {}, global.prev_response);
+                }
+                visitor.commentary = ssss;
+            }
+        }
+        // std.out("check thisnowssss \n");
+        
+        
+
+
     }
     
     can nlu with talk entry {
@@ -985,7 +1054,13 @@ node capture_memories:dialogue_state {
 
         // create answer list from user response
         if(!visitor.respond){ 
-            answer_list.list::append(visitor.question);
+            // visitor.answer_list.list::append(visitor.question);
+            if "answer_list" not in visitor.dialogue_context{
+                visitor.dialogue_context["answer_list"]=[visitor.question];
+            }
+            else{
+                visitor.dialogue_context["answer_list"].list::append(visitor.question);
+            }
             // std.out("sentiment: "+ sentiment.str);
         }
 
@@ -1058,7 +1133,7 @@ node capture_memories:dialogue_state {
                                     ii = 0;
                                     while (max_score < 0.1){
                                         best_answer = use.qa_classify(
-                                            text = answer_list[ii],
+                                            text = visitor.dialogue_context["answer_list"][ii],
                                             classes = lis
                                         );
                                         nn = best_answer['match_idx'];
@@ -1072,7 +1147,7 @@ node capture_memories:dialogue_state {
                                             answered_queue_name = ans_name;
                                         }
 
-                                        leng = answer_list.length - 1;
+                                        leng = visitor.dialogue_context["answer_list"].length - 1;
                                         if (max_score < 0.1){
                                             ii +=1;
                                             if(ii >= leng){
@@ -1126,7 +1201,7 @@ node capture_memories:dialogue_state {
                                 ii = 0;
                                 while (max_score < 0.1){
                                     best_answer = use.qa_classify(
-                                        text = answer_list[ii],
+                                        text = visitor.dialogue_context["answer_list"][ii],
                                         classes = lis
                                     );
                                     nn = best_answer['match_idx'];
@@ -1139,7 +1214,7 @@ node capture_memories:dialogue_state {
                                         // queue_context_key= item;
                                     }
 
-                                    leng = answer_list.length - 1;
+                                    leng = visitor.dialogue_context["answer_list"].length - 1;
                                     if (max_score < 0.1){
                                         ii +=1;
                                         if(ii >= leng){
@@ -1156,11 +1231,15 @@ node capture_memories:dialogue_state {
                             }
                             // std.out("lis");
                             // std.out(lis);
+                            
                             if (lis){
                                 ii = 0;
                                 while (max_score < 0.1){
+                                    // std.out("visitor.answer_listvvvvvvvvv\n");
+                                    // std.out(ii);
+                                    // std.out(visitor.dialogue_context["answer_list"]);
                                     best_answer = use.qa_classify(
-                                        text = answer_list[ii],
+                                        text = visitor.dialogue_context["answer_list"][ii],
                                         classes = lis
                                     );
                                     nn = best_answer['match_idx'];
@@ -1173,7 +1252,7 @@ node capture_memories:dialogue_state {
                                         // queue_context_key= item;
                                     }
 
-                                    leng = answer_list.length - 1;
+                                    leng = visitor.dialogue_context["answer_list"].length - 1;
                                     if (max_score < 0.1){
                                         ii +=1;
                                         if(ii >= leng){
@@ -1192,23 +1271,29 @@ node capture_memories:dialogue_state {
         // std.out("queue_context_filter");
         // std.out(queue_context_filter);
         // create_response
-        std.out("queue_contextqueue_contextqueue_contextqueue_contextqueue_context\n");
-        std.out(queue_context);
-        std.out(queue_context_key);
-        std.out(removed_queue);
+        // std.out("queue_contextqueue_contextqueue_contextqueue_contextqueue_context\n");
+        // std.out(queue_context);
+        // std.out(queue_context_key);
+        // std.out(removed_queue);
 
-        if(queue_context){
-            ent_que = [];
-            for item in queue_context{
-                if(item.type == dict){
-                    ent_que.list::append(item.dict::values[0]);
-                }
-            }
-            if(removed_queue in ent_que){
-                visitor.predicted_intent2 = "confirm_entity";
-            }
-        }
+        // if(queue_context){
+        //     ent_que = [];
+        //     for item in queue_context{
+        //         if(item.type == dict){
+        //             ent_que.list::append(item.dict::values[0]);
+        //         }
+        //     }
+        //     // if(removed_queue in ent_que){
+        //     //     visitor.predicted_intent2 = "confirm_entity";
+        //     // }
+        // }
+        // std.out("\nqueue_context");
+        // std.out(queue_context);
+        // std.out(queue_context_filter);
+        // std.out(visitor.respond);
+
         if(queue_context and queue_context_filter != "default" and !visitor.respond){
+            // std.out("this if selected 11");
             // for dic in queue_context{
             //     // if(dic)
             //     // std.out("dic do check\n");
@@ -1229,48 +1314,116 @@ node capture_memories:dialogue_state {
             //         create_response = flow.gen_response(chosen_response.str, queue_context);
             //     }
             // }
-            confirm_entity_json = file.load_json("utils/data/comfirm_entity.json");
-            ent_que = [];
-            for item in queue_context{
-                if(item.type == dict){
-                    ent_que.list::append(item.dict::values[0]);
-                }
+
+            // main_que = [];
+            // for m_items in main_queue{
+            //     if(m_items.type == dict){
+            //         for m_item in m_items.dict::values[0]{
+            //             if(m_item not in main_que): main_que.list::append(m_item);
+            //         }
+            //     }
+            // }
+            
+            // confirm_entity_json = file.load_json("utils/data/comfirm_entity.json");
+            // ent_que = [];
+            // select_que ="";
+            // ans_que_cont = {};
+            // std.out("removed_queueremoved_queueremoved_queueremoved_queue");
+            // std.out(removed_queue);
+            // std.out(queue_context_key);
+            // std.out(queue_context_filter);
+            // for items in queue_context{
+            //     std.out("items");
+            //     std.out(items);
+            //     if(queue_context[items].type == dict){
+            //         if(removed_queue in queue_context[items]){
+            //             select_que = items;
+            //         }
+            //         for item in queue_context[items]{
+            //             if (item not in ent_que): ent_que.list::append(item);
+            //             if (item not in ans_que_cont and items == select_que): ans_que_cont[item]=queue_context[items][item];
+            //             elif (item not in ans_que_cont and item in main_que): ans_que_cont[item]=queue_context[items][item];
+            //             // elif( item in main_queue[items] and removed_queue in queue_context[items][item]):ans_que_cont[item]=queue_context[items][item];
+            //             // elif( item in ans_que_cont and removed_queue in queue_context[items][item]):ans_que_cont[item]=queue_context[items][item];
+            //         }
+            //         // if (removed_queue in item.dict::values[0]){
+            //         //     for sentence in confirm_entity_json[removed_queue]{
+            //         //         flow.select_ent_response(sentence, queue_context[queue_context_key])
+            //         //     }
+            //         // }
+            //     }
+            // }
+            
+            // // std.out("removed_queue");
+            // // std.out(removed_queue);
+            // // std.out(queue_context_key);
+            // // std.out("queue_context_filter");
+            // // std.out(queue_context_filter);
+            // // std.out(ent_que);
+            // // std.out("select_que");
+            // // std.out(select_que);
+            // // std.out(ans_que_cont);
+            // std.out("main_que");
+            // std.out(main_que);
+            // if(removed_queue in ent_que and removed_queue in main_que){
+            //     // std.out("this if selected 00");
+            //     // visitor.predicted_intent2 = "confirm_entity";
+            //     std.out("ans_que_cont");
+            //     std.out(ans_que_cont);
+            //     std.out(removed_queue);
+            //     std.out(queue_context_key);
+            //     response_list = [];
+            //     for sentence in confirm_entity_json[removed_queue]{
+            //         // placeholders = [placeholder.strip(" {}") for placeholder in sentence.split("{{") if "}}" in placeholder];
+            //         // for ent in placeholders{
+            //         //     if(ent not in queue_context[queue_context_key]){
+            //         //         break;
+            //         //     }
+            //         // }
+                    
+            //         res = flow.select_ent_response(sentence, ans_que_cont);
+            //         response_list.list::append(res);
+            //         std.out("check response 4333");
+            //         std.out(create_response);
+            //     }
+            //     std.out("response_list");
+            //     std.out(response_list);
+            //     if (response_list and ans_que_cont): create_response = flow.gen_response(response_list.list, ans_que_cont, global.prev_response);
+            //     // create_response = flow.gen_response(response_list.list, queue_context[select_que]);
+
+            // }
+            if (queue_context_key in queue_context and entity_response){
+                // std.out("this if selected 44");
+                // std.out(entity_response);
+                // std.out(queue_context_key);
+                create_response = flow.gen_response(entity_response.list, queue_context[queue_context_key], global.prev_response);
             }
-            if(removed_queue in ent_que){
-                // visitor.predicted_intent2 = "confirm_entity";
-                for sentence in confirm_entity_json[removed_queue]{
-                    placeholders = [placeholder.strip(" {}") for placeholder in sentence.split("{{") if "}}" in placeholder];
-                    for ent in placeholders{
-                        if(ent not in queue_context[queue_context_key]){
-                            break;
-                        }
-                    }
-                }
-            }
-            elif (queue_context_key in queue_context){
-                create_response = flow.gen_response(entity_response.list, queue_context[queue_context_key]);
-            }
-            else{
-                create_response = flow.gen_response(entity_response.list, queue_context);
+            elif(entity_response and queue_context){
+                // std.out("this if selected 55");
+                create_response = flow.gen_response(entity_response.list, queue_context, global.prev_response);
             }
         }
-        else{
+        elif(entity_response){
+            // std.out("this if selected 33");
             // std.out("check else");
             // std.out(chosen_response);
-            // create_response = flow.gen_response(entity_response.list, queue_context);
-            create_response = chosen_response;
+            // create_response = flow.gen_response(entity_response.list);
+            // create_response = entity_response;
+            create_response = flow.gen_response(entity_response.list, {}, global.prev_response);
+            // create_response = chosen_response;
         }
 
         // add sentiment to response
         // std.out("removed_queue");
         // std.out(removed_queue);
         // std.out(default_queue);
-        if (visitor.sentiment != "" and removed_queue and removed_queue not in default_queue){
+        // if (visitor.sentiment != "" and removed_queue and removed_queue not in default_queue){
+        if (visitor.sentiment != "" or visitor.commentary !=""){
+            // std.out("THis ran commentary and sentiment");
             // std.out(visitor.sentiment);
+            // std.out(visitor.commentary);
             // std.out(create_response);
-            if(create_response){
-                new = visitor.sentiment.str + " " + create_response.str;
-            }
+            new = visitor.sentiment.str + " " + visitor.commentary.str + " " + create_response.str;
             visitor.response = new;
         }
         else{
@@ -1280,7 +1433,7 @@ node capture_memories:dialogue_state {
 
         // remove entity form visitor.dialogue_context
         for entity in remove_context{
-            visitor.dialogue_context.dict::pop(entity);
+            if (entity in visitor.dialogue_context): visitor.dialogue_context.dict::pop(entity);
             remove_context.list::remove(entity);
         }
 
@@ -1298,7 +1451,7 @@ node capture_memories:dialogue_state {
             visitor.dialogue_context["queue_context"] = queue_context;
         }
 
-        if (visitor.response and !visitor.predicted_intent2) {
+        if (visitor.response) {
             visitor.next_state = here;
             // std.out("NOTE_:: response\n\n");
         }
@@ -1366,10 +1519,30 @@ node capture_memories:dialogue_state {
             // std.out("NOTE_:: no response\n\n");
             // std.out("visitor.unanswered_queue.length");
             // std.out(visitor.unanswered_queue.length);
-            if (visitor.unanswered_queue and !visitor.predicted_intent2){
-                std.out("unasn check 32");
+            // unans_bool = false;
+            if (main_queue){
+                for ent in main_queue{
+                    // std.out("ent");
+                    // std.out(ent);
+                    // std.out(ent.dict::values.length);
+                    if (ent.type == dict){
+                        
+                        if (visitor.unanswered_queue and ent.dict::values.length == 0){
+                            // unans_bool = true;
+                            // std.out("bool embpt");
+                            visitor.predicted_intent2 = "unanswered_queue";
+                        }
+                    }
+                }
+            }
+            elif(!main_queue){
+                // std.out("unas work");
                 visitor.predicted_intent2 = "unanswered_queue";
             }
+            // if (visitor.unanswered_queue){
+            //     std.out("unasn check 32");
+            //     visitor.predicted_intent2 = "unanswered_queue";
+            // }
             visitor.respond = true;
             visitor.next_state = null;
         }
@@ -1518,8 +1691,10 @@ node document_memory:dialogue_state{
         for state in state_json{
             if (!visitor.respond) {
                 if (here.name == state["name"].str){
-                    arry = flow.select_response({}, state['responses'], {});
-                    visitor.response = arry['response'];
+                    // arry = flow.select_response({}, state['responses'], {});
+                    // visitor.response = arry['response'];
+                    visitor.dialogue_context["user_name"]="Tharick";
+                    visitor.response = flow.gen_response(state['responses'], visitor.dialogue_context, global.prev_response);
                 }
             }
         }
@@ -1554,6 +1729,8 @@ node unanswered_queue:dialogue_state{
     has removed_queue;
 
     can update_removed_que{
+        // std.out("removed_queue");
+        // std.out(removed_queue);
         if (visitor.respond){
             // std.out("visitor.unanswered_queue");
             // std.out(visitor.unanswered_queue);
@@ -1639,6 +1816,7 @@ node unanswered_queue:dialogue_state{
         queue_context_filter = "";
         queue_context_key = "";
         create_response = "";
+        chosen_response_list = [];
 
         que_list = visitor.question.list;
         if(!visitor.predicted_intent and que_list.length > 3){
@@ -1659,6 +1837,33 @@ node unanswered_queue:dialogue_state{
                 }
             }
         }
+
+
+        // std.out("visitor.dialogue_context['queue_context']");
+        // std.out(visitor.dialogue_context["queue_context"]);
+        for item in visitor.dialogue_context["queue_context"]{
+            if(visitor.dialogue_context['queue_context'][item].type==dict){
+                for entity in visitor.dialogue_context['queue_context'][item].dict::keys{
+                    answered_queue_list.list::append(entity);
+                }
+            }
+            else{
+                answered_queue_list.list::append(item);
+            }
+        }
+
+        // update answered_queue_list
+        // for item in answered_queue{
+        //     if (item.type == dict){
+        //         lis = item.dict::values;
+        //         for entity in lis[0]{
+        //             answered_queue_list.list::append(entity);
+        //         }
+        //     }
+        //     else{
+        //         answered_queue_list.list::append(item);
+        //     }
+        // }
 
         for item in visitor.unanswered_queue{
             if (item.type == dict){
@@ -1739,80 +1944,176 @@ node unanswered_queue:dialogue_state{
                             }
                             
 
-                            // if (lis){
-                            //     std.out("in list");
-                            //     ii = 0;
-                            //     while (max_score < 0.0000001){
-                            //         std.out("in while");
-                            //         best_answer = use.qa_classify(
-                            //             text = visitor.question,
-                            //             classes = lis
-                            //         );
-                            //         nn = best_answer['match_idx'];
-                            //         std.out(max_score);
-                            //         std.out("best_answer");
-                            //         std.out(best_answer);
+                            if (lis){
+                                std.out("in list");
+                                ii = 0;
+                                while (max_score < 0.0000001){
+                                    std.out("in while");
+                                    best_answer = use.qa_classify(
+                                        text = visitor.question,
+                                        classes = lis
+                                    );
+                                    nn = best_answer['match_idx'];
+                                    // std.out(max_score);
+                                    // std.out("best_answer");
+                                    // std.out(best_answer);
 
-                            //         if (best_answer['scores'][nn] > max_score){
-                            //             max_score = best_answer['scores'][nn];
-                            //             entity_response = response_entity['response'][entity][ent];
-                            //             removed_queue = entity;
-                            //             queue_context_filter = ent;
-                            //             queue_context_key= item.dict::keys[0];
-                            //         }
+                                    if (best_answer['scores'][nn] > max_score){
+                                        max_score = best_answer['scores'][nn];
+                                        entity_response = response_entity['response'][entity][ent];
+                                        removed_queue = entity;
+                                        queue_context_filter = ent;
+                                        queue_context_key= item.dict::keys[0];
+                                    }
 
-                            //         leng = answer_list.length - 1;
-                            //         if (max_score < 0){
-                            //             ii +=1;
-                            //             if(ii >= leng){
-                            //                 break;
-                            //             }
-                            //         }
-                            //     }
-                            //     std.out(max_score);
-                            //     chosen_response= rand.choice(entity_response);
-                            //     // std.out("chosen_response");
-                            //     // std.out(chosen_response);
-                            // }
+                                    leng = visitor.dialogue_context["answer_list"].length - 1;
+                                    if (max_score < 0){
+                                        ii +=1;
+                                        if(ii >= leng){
+                                            break;
+                                        }
+                                    }
+                                }
+                                // std.out(max_score);
+                                // chosen_response= rand.choice(entity_response);
+                                // std.out("chosen_response");
+                                // std.out(chosen_response);
+                            }
                         }
                     }
                 }
-                if(entity_response): chosen_response= rand.choice(entity_response);
+                if(entity_response): chosen_response= flow.gen_response(lis.list, visitor.dialogue_context["queue_context"][queue_context_key], global.prev_response);
+                // if(entity_response): chosen_response= rand.choice(entity_response);
             }
+            // elif (item.type == str){
+            //     // std.out("item is string");
+            //     if (item in response_entity['response'].dict::keys){
+            //         if ("default" in response_entity['response'][item].dict::keys){
+            //             chosen_response_list = response_entity['response'][item]['default'];
+            //             removed_queue = item;
+            //             // chosen_response= rand.choice(chosen_response_list);
+            //             // std.out("chosen_response");
+            //             // std.out(chosen_response);
+            //             // queue_context_filter = "default";
+            //             break; 
+            //         }
+            //     }
+            // }
+
             elif (item.type == str){
-                // std.out("item is string");
+
+                lis = [];
+
                 if (item in response_entity['response'].dict::keys){
-                    if ("default" in response_entity['response'][item].dict::keys){
-                        chosen_response_list = response_entity['response'][item]['default'];
-                        removed_queue = item;
-                        // chosen_response= rand.choice(chosen_response_list);
-                        // std.out("chosen_response");
-                        // std.out(chosen_response);
-                        // queue_context_filter = "default";
-                        break; 
+
+
+                    for ent in response_entity['response'][item].dict::keys{
+                        if(ent in answered_queue_list){
+                            // // if(ent in answered_queue){
+                            for res in response_entity['response'][item][ent]{
+                                lis.list::append(res);
+                            }
+                            // }
+
+                            if (lis){
+                                ii = 0;
+                                while (max_score < 0.1){
+                                    best_answer = use.qa_classify(
+                                        text = visitor.dialogue_context["answer_list"][ii],
+                                        classes = lis
+                                    );
+                                    nn = best_answer['match_idx'];
+
+                                    if (best_answer['scores'][nn] > max_score){
+                                        max_score = best_answer['scores'][nn];
+                                        entity_response = response_entity['response'][item][ent];
+                                        removed_queue = item;
+                                        queue_context_filter = ent;
+                                        // queue_context_key= item;
+                                    }
+
+                                    leng = visitor.dialogue_context["answer_list"].length - 1;
+                                    if (max_score < 0.1){
+                                        ii +=1;
+                                        if(ii >= leng){
+                                            break;
+                                        }
+                                    }
+                                }
+                                // chosen_response= rand.choice(entity_response);
+                            }
+                            // std.out("lis");
+                            // std.out(lis);
+                            // chosen_response = rand.choice(lis);
+                            chosen_response = flow.gen_response(lis.list, visitor.dialogue_context["queue_context"], global.prev_response);
+                        }
+                        if(ent not in answered_queue_list){
+                            for res in response_entity['response'][item]["default"]{
+                                lis.list::append(res);
+                            }
+                            // std.out("lis");
+                            // std.out(lis);
+                            if (lis){
+                                ii = 0;
+                                while (max_score < 0.1){
+                                    best_answer = use.qa_classify(
+                                        text = visitor.dialogue_context["answer_list"][ii],
+                                        classes = lis
+                                    );
+                                    nn = best_answer['match_idx'];
+
+                                    if (best_answer['scores'][nn] > max_score){
+                                        max_score = best_answer['scores'][nn];
+                                        entity_response = response_entity['response'][item]["default"];
+                                        removed_queue = item;
+                                        queue_context_filter = "default";
+                                        // queue_context_key= item;
+                                    }
+
+                                    leng = visitor.dialogue_context["answer_list"].length - 1;
+                                    if (max_score < 0.1){
+                                        ii +=1;
+                                        if(ii >= leng){
+                                            break;
+                                        }
+                                    }
+                                }
+                                // chosen_response = flow.gen_response(lis.list, {}, global.prev_response);
+                            }
+                        }
                     }
                 }
+                // chosen_response= rand.choice(entity_response);
+                // chosen_response_list = lis;
+                if (entity_response): chosen_response = flow.gen_response(lis.list, visitor.dialogue_context["queue_context"], global.prev_response);
             }
         }
-        create_response = "";
-        if(visitor.dialogue_context["queue_context"] and queue_context_filter != "default"){
-            for dic in visitor.dialogue_context["queue_context"]{
-                if (queue_context_key == dic){
-                    create_response = flow.gen_response(chosen_response_list.list, visitor.dialogue_context["queue_context"][dic]);
-                }
-                else{
-                    // create_response = chosen_response;
-                    create_response = flow.gen_response(chosen_response_list.list, visitor.dialogue_context["queue_context"]);
-                }
-            }
+        // create_response = "";
+        // std.out("chosen_response_list");
+        // std.out(chosen_response_list);
+        // if(visitor.dialogue_context["queue_context"] and queue_context_filter != "default" and chosen_response_list){
 
-        }
-        elif!(visitor.dialogue_context["queue_context"] and queue_context_filter !="default"){
-            create_response = chosen_response;
-        }
+        //     for dic in visitor.dialogue_context["queue_context"]{
+        //         if (queue_context_key == dic){
+        //             create_response = flow.gen_response(chosen_response_list.list, visitor.dialogue_context["queue_context"][dic], global.prev_response);
+        //         }
+        //         else{
+        //             // create_response = chosen_response;
+        //             create_response = flow.gen_response(chosen_response_list.list, visitor.dialogue_context["queue_context"], global.prev_response);
+        //         }
+        //     }
 
-        if (create_response and state_response){
-            visitor.response = state_response.str + " " + create_response.str;
+        // }
+        // elif!(visitor.dialogue_context["queue_context"] and queue_context_filter !="default"){
+        //     // create_response = chosen_response;
+        //     chosen_response = flow.gen_response(lis.list, {}, global.prev_response);
+        // }
+
+        // if (create_response and state_response){
+        //     visitor.response = state_response.str + " " + create_response.str;
+        // }
+        if (chosen_response and state_response){
+            visitor.response = state_response.str + " " + chosen_response.str;
         }
 
         if(visitor.unanswered_queue){
@@ -1837,3 +2138,6 @@ node unanswered_queue:dialogue_state{
         }
     }
 }
+
+
+    

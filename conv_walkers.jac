@@ -43,7 +43,9 @@ walker talk {
     has image_urls = null;
 
     has sentiment = "";
+    has commentary = "";
     has unanswered_queue = [];
+    has answer_list = [];
     // has queue_context = {};
     // tubo //
 
@@ -57,6 +59,7 @@ walker talk {
     }
     dialogue_state {
         if (respond) {
+            
             take next_state else {
                 report {
                     "name": here.name,
@@ -64,6 +67,7 @@ walker talk {
                 };
             }
             respond = false;
+            global.prev_response = visitor.response;
         } 
     }
 }
@@ -171,8 +175,8 @@ walker create_memory{
     memories{
         payload ={};
         if(memory_context){
-            // std.out("\nmemory_context");
-            // std.out(memory_context);
+            std.out("\nmemory_context");
+            std.out(memory_context);
 
             memory_id = rand.word() + (rand.integer(0, 99999)).str;
 
@@ -181,6 +185,7 @@ walker create_memory{
                     if('date' in memory_context['queue_context'][item]){
                         payload["when"] = tobu.phrase_to_date(memory_context['queue_context'][item]['date'][0]);
                     }
+                    else: payload["date"] = ["Date was not stated"];
                     // if('subject' in memory_context['queue_context'][item]){
                     //     payload["subject"] = memory_context['queue_context'][item]['subject'];
                     // }
@@ -214,17 +219,22 @@ walker create_memory{
                         // }
                         // payload["how"] = zs_emotion;
                     }
+                    else: payload["how"] = ["Emotion was not stated"];
                     if('location' in memory_context['queue_context'][item]){
-                        payload["where"] = memory_context['queue_context'][item]['location'][0];
+                        payload["where"] = memory_context['queue_context'][item]['location'];
+                        // payload["where"] = memory_context['queue_context'][item]['location'][0];
                     }
+                    else: payload["where"] = ["location was not stated"];
                     if('people' in memory_context['queue_context'][item]){
                         payload["who"] = memory_context['queue_context'][item]['people'];
                     }
+                    else: payload["who"] = ["People was not stated"];
                 }
                 elif(memory_context['queue_context'][item].type == list){
                     if('date' in memory_context['queue_context']){
                         payload["when"] = tobu.phrase_to_date(memory_context['queue_context']['date'][0]);
                     }
+                    else: payload["date"] = ["Date was not stated"];
                     // if('subject' in memory_context['queue_context']){
                     //     payload["subject"] = "memory_context['queue_context']['subject']";
                     // }
@@ -266,12 +276,16 @@ walker create_memory{
                         
                         // payload["how"] = memory_context['queue_context']['emotion'][0];
                     }
+                    else: payload["how"] = ["Emotion was not stated"];
                     if('location' in memory_context['queue_context']){
-                        payload["where"] = memory_context['queue_context']['location'][0];
+                        payload["where"] = memory_context['queue_context']['location'];
+                        // payload["where"] = memory_context['queue_context']['location'][0];
                     }
+                    else: payload["where"] = ["location was not stated"];
                     if('people' in memory_context['queue_context']){
                         payload["who"] = memory_context['queue_context']['people'];
                     }
+                    else: payload["who"] = ["People was not stated"];
                     // if('date' in )
                 }
             }

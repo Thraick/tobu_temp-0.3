@@ -5,6 +5,12 @@ actions load module jac_nlp.use_enc
 actions load module jac_nlp.t5_sum
 actions load module jac_nlp.zs_classifier
 actions load module jac_nlp.cl_summer
+actions load module jac_nlp.gpt2
+actions load module jac_nlp.sbert_sim
+actions load module jac_nlp.gpt3
+
+
+
 
 actions load local utils/model/local/flow.py
 actions load local utils/model/local/twilio_bot.py
@@ -47,12 +53,23 @@ login http://localhost:8008
 
 
 
+pip install jaseci --upgrade
+pip install jac_nlp --upgrade
+pip install jaseci-serv --upgrade
+
 TODO 
 
-- training data X
-- summarizer and punctuator 
-- fix queue_context
-- running huh... when was this?  // use previous data if there is one
-- fix response unique response only
-
+- training data X ' in progress'
+- summarizer and punctuator ' tomorrow' ' load model at work'
+- fix queue_context ' done'
+- running huh... when was this?  use previous data if there is one ' done'
+- fix response unique response only ' done'
+- update memory node with queue_context ' tomorrow'
+- connect memories
+- setup commentary with gpt 2 ' walker setup'
+- zs_classifier 'not working' 
+- add user to response
+- check remove_list
+- add more response
+- 
 

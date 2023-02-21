@@ -1,51 +1,113 @@
 {
-    "response": {
-        "location":{
-            "subject":["Where did you celebrate {{subject}}'s birthday?"],
-            "event":["Where was the {{event}}?"],
-            "default":[
-                "Where was this?",
-                "Where did this happen?",
-                "Where did this memory take place?"
-            ]
-        },
-        "age":{
-            "subject":["how old is {{subject}}?"],
-            "subject_fp":["How old were you?","How many years were you celebrating?"],
-            "default":["How many years old?"]
-        },
-        "weather":{
-            "event":["What's the weather like at the {{event}}?"],
-            "activity":["What's the weather like while {{activity}}?"],
-            "default":["What's the weather like?"]
-        },
-        "people":{
-            "event":["Who was at the {{event}} with you?"],
-            "activity":["{{activity}} huh...was anyone with you?"],
-            "default":["Who was there with you?", "Was there anyone else you'd like to mention in this memory?"]
-        },
-        "emotion":{
-            "subject":["I bet you had a great time at {{subject}}'s birthday...describe how you were feeling."],
-            "activity":["Hmmm {{activity}}, huh...how did it make you feel?", "Did you enjoy your {{activity}}?"],
-            "event":["How did you feel at the {{event}}"],
-            "default":["How do you feel about this memory?", "Describe exactly how you feel about this memory"]
-        },
-        "subject":{
-            "event":["Who's {{event}} was it?"],
-            "default":["who's birthday was it?"]
-        },
-        "event":{
-            "default":["What event would you like to document?"]
-        },
-        "activity":{
-            "default":["What activity would you like to document?"]
-        },
-        "date":{
-            "subject":["When was {{subject}}'s birthday?"],
-            "event":["When did this {{event}} happen?"],
-            "activity":["{{activity}} huh... when was this?"],
-            "default": ["When was this?"]
-        }
+  "response": {
+    "location": {
+      "subject": [
+        "Where did you celebrate {{subject}}'s birthday?",
+        "What's the venue where {{subject}}'s birthday was celebrated?",
+        "Can you describe the location where {{subject}}'s birthday party was held?",
+        "Do you remember where {{subject}} celebrated their birthday?"
+      ],
+      "event": [
+        "Where was the {{event}}?",
+        "Where did the {{event}} take place?",
+        "Do you remember where the {{event}} was held?",
+        "I'm curious, where was the {{event}} located?"
+      ],
+      "default": [
+        "Where did this happen?",
+        "Where did this memory take place?",
+        "Can you tell me where this occurred?",
+        "Do you remember where this took place?"
+      ]
+    },
+    "age": {
+      "subject": [
+        "How old is {{subject}}?",
+        "I'm curious, how old is {{subject}}?",
+        "What's {{subject}}'s age?",
+        "{{subject}}'s age, can you tell me?"
+      ],
+      "subject_fp": [
+        "How old were you?",
+        "How many years were you celebrating?"
+      ],
+      "default": ["How many years old?"]
+    },
+    "weather": {
+      "event": [
+        "What's the weather like at the {{event}}?",
+        "Can you tell me what the weather is like at the {{event}}?",
+        "I'm curious, what's the expected weather like at the {{event}}?"
+      ],
+      "activity": [
+        "What's the weather like while {{activity}}?",
+        "I'm curious, what's the expected weather like while {{activity}}?",
+        "Can you tell me what the weather is like while {{activity}}?"
+      ],
+      "default": [
+        "What's the weather like?",
+        "I'm curious, what's the weather like?"
+      ]
+    },
+    "people": {
+      "event": [
+        "Who was at the {{event}} with you?",
+        "Do you remember who was at the {{event}} with you?",
+        "I'm curious, who else was at the {{event}}?",
+        "I'm interested to know who else was at the {{event}}."
+      ],
+      "activity": [
+        "Who did you do {{activity}} with?",
+        "I'm curious, who else was with you during {{activity}}?",
+        "I'm interested to know who else participated in {{activity}} with you.",
+        "Can you give me a list of people who did {{activity}} with you?"
+      ],
+      "default": [
+        "Who was there with you?",
+        "Can you tell me who was there with you?",
+        "Do you remember who was present with you?",
+        "I'm curious, who else was there with you?"
+      ]
+    },
+    "emotion": {
+      "subject": [
+        "I bet you had a great time at {{subject}}'s birthday...describe how you were feeling.",
+        "Were you excited during {{subject}}'s {{event}}?",
+        "What was your overall feeling during {{subject}}'s {{event}}?",
+        "What was the general mood during {{subject}}'s {{event}}?"
+      ],
+      "activity": [
+        "Can you describe how {{activity}} made you feel?",
+        "How did {{activity}} make you feel?",
+        "Were you excited while doing {{activity}}?",
+        "Did you enjoy your {{activity}}?"
+      ],
+      "event": [
+        "How did you feel at the {{event}}",
+        "Can you describe how you felt at the {{event}}?",
+        "How did the {{event}} make you feel?"
+      ],
+      "default": [
+        "How do you feel about this memory?",
+        "How did you feeling at the moment?",
+        "Describe exactly how you feel about this memory"
+      ]
+    },
+    "subject": {
+      "event": ["Who's {{event}} was it?"],
+      "default": ["who's birthday was it?"]
+    },
+    "event": {
+      "default": ["What event would you like to document?"]
+    },
+    "activity": {
+      "default": ["What activity would you like to document?"]
+    },
+    "date": {
+      "subject": ["When was {{subject}}'s birthday?"],
+      "event": ["When did this {{event}} happen?"],
+      "activity": ["{{activity}} huh... when was this?"],
+      "default": ["When was this?"]
     }
+  }
 }
-

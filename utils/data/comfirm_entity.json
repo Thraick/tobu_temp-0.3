@@ -1,7 +1,27 @@
 {
   "emotion": [
     "Did you also feel {{emotion}} at {{subject}}'s {{event}}?",
-    "Did you also Feel {{emotion}} {{activity}}?",
-    "Did you also feel {{emotion}} at the birthday?"
+    "Did you also feel {{emotion}} {{activity}}?",
+    "Did you also feel {{emotion}} at the birthday?",
+    "Did you also feel {{emotion}} at the {{event}}?"
+  ],
+  "date": [
+    "Did you went {{activity}} {{date}}?",
+    "Did this happened {{date}}?",
+    "Was the {{event}} {{date}}?"
+  ],
+  "location": [
+    "Did you went {{activity}} at {{location}}?",
+    "Did this happened at {{location}}?",
+    "Was the {{event}} at {{location}}?"
+  ],
+  "people": [
+    "Was {{people}} at the {{event}}?",
+    "Was {{people}} there with you?",
+    "Was {{people}} {{activity}} with you?"
+  ],
+  "weather": [
+    "Was the weather also {{weather}} at {{event}}?",
+    "Was the weather also {{weather}} {{activity}}?"
   ]
 }

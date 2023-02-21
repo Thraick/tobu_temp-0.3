@@ -6,6 +6,7 @@ import {*} with './utils/model/kit/bi_enc.jac';
 import {*} with './utils/model/kit/tfm_ner.jac';
 import {*} with "./utils/model/kit/summary.jac";
 
+import {*} with "./utils/model/kit/tess.jac";
 
 walker init {
     root{

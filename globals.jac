@@ -11,11 +11,12 @@ global train_classifer_path = 'utils/data/classifer_data.json';
 global train_tfn_ner_path = 'utils/data/tfm_train.json';
 
 global entity_label =[];
-
+global prev_response = "";
 // summary
 global sentiment_descriptors_path = "utils/data/summary/sentiment_descriptors.json";
 global events_path = "utils/data/summary/events.json";
 global sentiments_path = "utils/data/summary/sentiments.json";
+global commentary_path = "utils/data/commentary.json";
 global emotion_score = 0.1;
 global entity_response_score = 0;
 
