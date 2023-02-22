@@ -36,4 +36,7 @@ global sentiments = {
     "surprised": ["Wow, that's surprising!", "Amazing!, I know you are surprised indeed!"]
 };
 
-global to_remove = ["Yes ", "No ", "Oh ", "yes ", "no ", "oh ","yes", "no", "oh", "Yes", "No", "Oh", "I don't know", "i don't know", "i dont know", "I dont know", "Save it", "save it", "yeah"," Yeah", "nah", "Nah", "nope", "Nope", "yea", "Yea"];
+// global to_remove = ["Yes ", "No ", "Oh ", "yes ", "no ", "oh ","yes", "no", "oh", "Yes", "No", "Oh", "I don't know", "i don't know", "i dont know", "I dont know", "Save it", "save it", "yeah"," Yeah", "nah", "Nah", "nope", "Nope", "yea", "Yea"];
+
+// global to_remove = ['yes', 'no', 'oh', "i don't know", 'nope', 'yeah', 'nah', 'maybe', 'possibly', 'perhaps', 'sorry', 'please', 'thank you', 'okay', 'alright', 'uh-huh', 'uh-uh', 'oops', 'huh', 'ugh', 'yikes', 'meh', 'mhm', 'gotcha', 'well', 'you know', 'so'];
+global to_remove = ['yes', 'no', 'oh', "i don't know", 'nope', 'yeah', 'nah', 'maybe', 'possibly', 'perhaps', 'sorry', 'please', 'thank you', 'okay', 'alright', 'uh-huh', 'uh-uh', 'oops', 'huh', 'ugh', 'yikes', 'meh', 'mhm', 'gotcha', 'well', 'you know', 'so', 'kinda', 'sorta', 'basically', 'actually', 'literally', 'seriously', 'definitely', 'absolutely', 'totally', 'completely', 'utterly', 'quite', 'pretty', 'fairly', 'rather', 'somehow', 'somewhat', 'anyway', 'anyhow', 'anyways', 'alas', 'voila', 'ta-da'];

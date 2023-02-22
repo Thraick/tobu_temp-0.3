@@ -129,7 +129,7 @@ def punctuate(text:list):
 # ff = ["yesterday was anna's birthday i had a great time with my friends this happened at ann arbor she is 22"]
 # print(punctuate(ff))
 @jaseci_action(act_group=["local"], allow_remote=True)
-def add_full_stop(sentences:list):
+def add_full_stop(sentences:list, to_remove:list):
     sent2 =[]
     ww =[]
     for i in range(len(sentences)):
@@ -138,12 +138,21 @@ def add_full_stop(sentences:list):
         
     for i in range(len(ww)):
         if not ww[i].endswith("."):
-            ww[i] = ww[i] + ". "
-            sent2.append( ww[i].capitalize())
+            
+
+            words = ww[i].split()
+            words = [w for w in words if w.lower() not in to_remove]
+            result = ' '.join(words)
+            result1 = result + ". "
+
+            sent2.append( result1.capitalize())
 
 
     return sent2
 
-# ss = add_full_stop(["this is good  ", "this is good33 "])
-# print(ss)
 
+
+# words_to_remove = ['yes', 'no', 'oh', 'nope', 'yeah']
+# sentence = ["this is good  ", " yes this is good33 "]
+# ss = add_full_stop(sentence, words_to_remove)
+# print(ss)

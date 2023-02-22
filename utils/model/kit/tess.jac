@@ -86,6 +86,7 @@ walker t5_summary{
 
 walker check{
     can use.text_classify;
+    result = [];
 
     with exit{
 

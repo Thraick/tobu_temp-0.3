@@ -94,8 +94,11 @@
       ]
     },
     "subject": {
-      "event": ["Who's {{event}} was it?"],
-      "default": ["who's birthday was it?"]
+      "event": [
+        "Whose {{event}} was it?",
+        "I am curious. Whose {{event}} was it?"
+      ],
+      "default": ["No response was added!!!"]
     },
     "event": {
       "default": ["What event would you like to document?"]
@@ -104,10 +107,28 @@
       "default": ["What activity would you like to document?"]
     },
     "date": {
-      "subject": ["When was {{subject}}'s birthday?"],
-      "event": ["When did this {{event}} happen?"],
-      "activity": ["{{activity}} huh... when was this?"],
-      "default": ["When was this?"]
+      "subject": [
+        "When was {{subject}}'s {{event}}?",
+        "Can you tell me the date of {{subject}}'s {{event}}?",
+        "Can you remember when was {{subject}}'s {{event}}"
+      ],
+      "event": [
+        "When did this {{event}} happen?",
+        "What was the date of {{event}}?",
+        "Can you tell me when {{event}} occurred?",
+        "Do you remember the exact day of {{event}}?"
+      ],
+      "activity": [
+        "What was the date when {{activity}} took place?",
+        "Can you tell me when {{activity}} occurred?",
+        "Do you remember the exact day of {{activity}}?",
+        "When did this {{event}} happen?"
+      ],
+      "default": [
+        "When was this?",
+        "when did this took place?",
+        "Can you tell me when this happened?"
+      ]
     }
   }
 }
